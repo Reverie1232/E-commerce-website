@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Orders</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/indexstyle.css}" />
+</head>
+<body>
+<header>
+    <h1>Your Orders</h1>
+    <nav>
+        <ul>
+            <li><a th:href="@{/merchant}">Products</a></li>
+            <li><a th:href="@{/user-logs}">UserLogs</a></li>
+            <li><a th:href="@{/user-orders}">UserOrders</a></li>
+        </ul>
+    </nav>
+</header>
+
+<main>
+    <section>
+        <h2>All Orders</h2>
+        <table>
+            <thead>
+            <tr>
+                <th>Order ID</th>
+                <th>Order Date</th>
+                <th>Total Price</th>
+                <th>Details</th>
+            </tr>
+            </thead>
+            <tbody>
+            <!-- Loop through user's orders -->
+            <tr th:each="order, status : ${orderList}">
+                <td th:text="${status.index + 1}"></td>
+                <td th:text="${order.order_date}"></td>
+                <td th:text="${order.totalPrice}"></td>
+                <td>
+                    <a th:href="@{'/all-order/details/' + ${order.order_id}}">View Details</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+</main>
+
+<footer>
+    <!-- Add footer content if needed -->
+</footer>
+</body>
+</html>

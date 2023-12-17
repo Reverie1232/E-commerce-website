@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${goods.name}"></title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/indexstyle.css}" />
+</head>
+<body>
+<header>
+    <h1 th:text="${goods.name}"></h1>
+    <nav>
+        <ul>
+            <li><a th:href="@{/goods}">Products</a></li>
+            <li><a th:href="@{/cart}">Cart</a></li>
+            <li><a th:href="@{/orders}">Orders</a></li>
+            <li><a th:href="@{/info}">Information</a></li>
+            <!-- 如果用户已登录，显示用户名和注销链接 -->
+            <li th:if="${loggedInUser != null}">
+                <span th:text="${loggedInUser.username}" style="color: #e80f0f "></span>
+                <a th:href="@{/logout}">Logout</a>
+            </li>
+
+            <!-- 如果用户未登录，显示登录链接 -->
+            <li th:if="${loggedInUser == null}">
+                <a th:href="@{/login}">Login</a>
+            </li>
+        </ul>
+    </nav>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+</header>
+<main>
+    <section>
+        <h2>Description</h2>
+        <p th:text="${goods.description}"></p>
+        <h2>Price</h2>
+        <p th:text="'$' + ${goods.price}"></p>
+        <!--添加商品到购物车-->
+        <form id="addToCartForm" method="post">
+            <label for="quantity">Quantity:</label>
+            <input type="hidden" id="goods_id" th:value="${goods.id}">
+            <input type="number" id="quantity" name="quantity" oninput="validity.valid||(value='')" value="1" min="1" step="1">
+            <p>Total Price:<span id="totalPrice" th:text="${goods.price}"></span></p>
+            <button type="button" onclick="addToCart()">Add to Cart</button>
+        </form>
+    </section>
+</main>
+<footer>
+    <p>&copy; 2023 Your E-commerce Website</p>
+</footer>
+
+<script type="text/javascript" th:inline="javascript">
+    $(document).ready(function (){
+        updateTotalPrice();
+    })
+    //监听输入框的输入事件
+    $("#quantity").on("input", function (){
+        updateTotalPrice();
+    });
+    function updateTotalPrice(){
+        var goodsPrice = /*[[${goods.price}]]*/;
+        var quantity = $("#quantity").val();
+        var totalPrice = goodsPrice * quantity;
+        $("#totalPrice").text('$' + totalPrice);
+    }
+    //添加到购物车
+    function addToCart(){
+        var goods_id = $("#goods_id").val();
+        var quantity = $("#quantity").val();
+        $.ajax({
+            url:"/add",
+            type:"POST",
+            data:{
+                goods_id:goods_id,
+                quantity:quantity
+            },
+            resultType: "JSON",
+            success:function (result){
+                alert(result.message);
+                if(400 === result.code)
+                window.location.href = "/login";
+            },
+            error:function (result){
+                alert(result.message);
+            }
+        });
+    }
+</script>
+</body>
+</html>

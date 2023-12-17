@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to Our E-commerce Store</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/indexstyle.css}" />
+</head>
+<body>
+<header>
+    <h1>Goods List</h1>
+    <nav>
+        <ul>
+            <li><a th:href="@{/goods}">Products</a></li>
+            <li><a th:href="@{/cart}">Cart</a></li>
+            <li><a th:href="@{/orders}">Orders</a></li>
+            <li><a th:href="@{/info}">Information</a></li>
+            <!-- 如果用户已登录，显示用户名和注销链接 -->
+            <li th:if="${loggedInUser != null}">
+                <span th:text="${loggedInUser.username}" style="color: #e80f0f "></span>
+                <a th:href="@{/logout}">Logout</a>
+            </li>
+
+            <!-- 如果用户未登录，显示登录链接 -->
+            <li th:if="${loggedInUser == null}">
+                <a th:href="@{/login}">Login</a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main>
+    <section>
+        <h2>All Goods</h2>
+        <ul>
+            <li th:each="goods : ${goodsList}">
+                <a th:href="@{/goods/{id}(id=${goods.id})}">
+                    <h3 th:text="${goods.name}"></h3>
+                </a>
+                <p th:text="${goods.description}"></p>
+                <p th:text="'Price: ' + ${goods.price}"></p>
+            </li>
+        </ul>
+    </section>
+</main>
+<footer>
+    <p>&copy; 2023 Your E-commerce Website</p>
+</footer>
+</body>
+</html>

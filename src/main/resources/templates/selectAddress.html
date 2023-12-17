@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Checkout</title>
+  <link rel="stylesheet" type="text/css" th:href="@{/css/indexstyle.css}" />
+</head>
+<body>
+<header>
+  <h1>Checkout</h1>
+  <nav>
+    <ul>
+      <li><a th:href="@{/goods}">Products</a></li>
+      <li><a th:href="@{/cart}">Cart</a></li>
+      <li><a th:href="@{/orders}">Orders</a></li>
+      <li><a th:href="@{/info}">Information</a></li>
+      <!-- 如果用户已登录，显示用户名和注销链接 -->
+      <li th:if="${user != null}">
+        <span th:text="${user.username}" style="color: #e80f0f "></span>
+        <a th:href="@{/logout}">Logout</a>
+      </li>
+    </ul>
+  </nav>
+</header>
+
+<main>
+  <section>
+    <h2>Select Shipping Address</h2>
+    <form th:action="@{/checkout/confirm}" method="post">
+      <label for="shippingAddress">Choose Address:</label>
+      <select id="shippingAddress" name="shippingAddress" required>
+        <!-- Loop through user's saved addresses -->
+        <option th:each="address : ${addresses}" th:value="${address.address_id}">
+          <!-- Display recipient name, street address, city, province, and phone number -->
+          <span th:text="${address.recipient_name} + ' - ' + ${address.street_address} + ', ' + ${address.area} + ' , '+ ${address.city} + ', '  + ${address.province} + ' - ' + ${address.phone_number}"></span>
+        </option>
+      </select>
+      <button type="submit">Confirm Checkout</button>
+    </form>
+  </section>
+</main>
+
+<footer>
+  <!-- Add footer content if needed -->
+</footer>
+</body>
+</html>

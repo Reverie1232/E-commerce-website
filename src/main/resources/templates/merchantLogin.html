@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/styles.css}" />
+</head>
+<body>
+<header>
+    <h1>Merchant System</h1>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+</header>
+<main>
+    <section>
+        <h2>Login</h2>
+        <form th:action="@{/login}" method="post" onsubmit="return false;">
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" required>
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
+            <button type="submit" id="login">Login</button>
+        </form>
+    </section>
+</main>
+<footer>
+    <p>&copy; 2023 E-commerce Website</p>
+</footer>
+<script type="text/javascript" charset="UTF-8">
+    // 登陆账号
+    $("#login").on("click", function (){
+        $.ajax({
+            url: "/merchant/login",
+            type: "POST",
+            data: {
+                name: $("#name").val(),
+                password: $("#password").val()
+            },
+            resultType: "JSON",
+            success: function (result){
+                alert(result.message);
+                if(200 === result.code){
+                    window.location.href = "/merchant";
+                }
+            },
+            error: function (result){
+
+            }
+        })
+    })
+</script>
+</body>
+</html>

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Merchant Dashboard</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/indexstyle.css}" />
+    <!-- 引入jQuery，如果你不使用jQuery，可以使用原生JavaScript -->
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+</head>
+<body>
+
+<header>
+    <h1>Merchant Dashboard</h1>
+    <nav>
+        <ul>
+            <li><a th:href="@{/merchant}">Products</a></li>
+            <li><a th:href="@{/user-logs}">UserLogs</a></li>
+            <li><a th:href="@{/user-orders}">UserOrders</a></li>
+        </ul>
+    </nav>
+</header>
+<main>
+    <section>
+        <h2>Product Listing</h2>
+        <table>
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Price</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody id="productList">
+                <tr th:each="product, status : ${goodsList}">
+                    <td th:text="${status.index + 1}"></td>
+                    <td th:text="${product.name}"></td>
+                    <td th:text="${product.description}"></td>
+                    <td th:text="${product.price}"></td>
+                    <td style="display: flex;">
+                        <form th:action="@{'/edit-product/'+${product.id}}" method="get">
+                            <button type="submit">Edit</button>
+                        </form>
+
+                        <form th:action="@{/remove-product}" method="post" onsubmit="return confirm('Are you sure you want to add this goods?');" style="display: inline;">
+                            <input type="hidden" th:name="productId" th:value="${product.id}" />
+                            <button type="submit">Remove</button>
+                        </form>
+                    </td>
+                </tr>
+            <!-- Product details go here -->
+            </tbody>
+        </table>
+    </section>
+    <section>
+        <h2>Add new Product</h2>
+        <form th:action="@{/add-product}" method="post" onsubmit="return confirm('Are you sure you want to add this goods?');" style="max-width: 400px; margin: auto;">
+            <div style="margin-bottom: 10px;">
+                <label for="productName">Product Name:</label>
+                <input type="text" id="productName" name="productName" required class="form-control">
+            </div>
+            <div style="margin-bottom: 10px;">
+                <label for="productDescription">Product Description:</label>
+                <input type="text" id="productDescription" name="productDescription" required class="form-control">
+            </div>
+            <div style="margin-bottom: 10px;">
+                <label for="productPrice">Product Price:</label>
+                <input type="number" id="productPrice" name="productPrice" required class="form-control" oninput="validity.valid||(value='')" min="0.01" step="0.01">
+            </div>
+            <div style="margin-bottom: 10px;">
+                <label for="productStock">Product Stock:</label>
+                <input type="number" id="productStock" name="productStock" required class="form-control" oninput="validity.valid||(value='')" min="1" step="1">
+            </div>
+            <button type="submit" class="btn btn-primary">Add Product</button>
+        </form>
+    </section>
+</main>
+
+</body>
+</html>
+
+

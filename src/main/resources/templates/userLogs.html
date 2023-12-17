@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Log Page</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/indexstyle.css}" />
+</head>
+<body>
+<header>
+    <h1>User Behavior Logs</h1>
+    <nav>
+        <ul>
+            <li><a th:href="@{/merchant}">Products</a></li>
+            <li><a th:href="@{/user-logs}">UserLogs</a></li>
+            <li><a th:href="@{/user-orders}">UserOrders</a></li>
+        </ul>
+    </nav>
+</header>
+
+<main>
+    <section>
+        <h2>User Behavior Logs</h2>
+        <tr>
+            <td>
+                <form th:action="@{/clear-logs}" method="post" onsubmit="return confirm('Are you sure you want to clear all logs?');" style="display: inline;">
+                    <button type="submit">Clear Logs</button>
+                </form>
+            </td>
+        </tr>
+        <table>
+            <thead>
+            <tr>
+                <th>Username</th>
+                <th>Time</th>
+                <th>Product</th>
+                <th>Action Type</th>
+            </tr>
+            </thead>
+            <tbody>
+            <!-- Iterate over user logs and display each log entry -->
+            <tr th:each="log : ${userLogs}">
+                <td th:text="${log.username}"></td>
+                <td th:text="${log.timestamp}"></td>
+                <td th:text="${log.goods_name}"></td>
+                <td th:text="${log.action}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+</main>
+
+<footer>
+    <p>&copy; 2023 Your E-commerce Website</p>
+</footer>
+</body>
+</html>

@@ -1,0 +1,27 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://8.134.166.18:3306/example?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf8&useSSL=false&allowPublicKeyRetrieval=true
+    username: root
+    password: Zhang1022
+  mail:
+    protocol: smtp # 邮件协议
+    host: smtp.163.com # qq邮箱smtp服务器地址
+    port: 465
+    username: m16675861751@163.com # 发件人邮箱地址
+    password: WWPIIRWMRKATLMVK # 授权码
+    default-encoding: utf-8 # 编码字符集
+    properties:
+      mail:
+        smtp:
+          starttls:
+            enable: true
+          auth: true
+          ssl:
+            enable: true
+          socketFactoryClass: javax.net.ssl.SSLSocketFactory
+        debug: true # 开启debug模式后会完整打印邮件发送过程的日志
+
+mybatis:
+  configuration:
+    map-underscore-to-camel-case: true

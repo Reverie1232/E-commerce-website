@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Information</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/indexstyle.css}" />
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+</head>
+<body>
+<header>
+    <h1>Your Information</h1>
+    <nav>
+        <ul>
+            <li><a th:href="@{/goods}">Products</a></li>
+            <li><a th:href="@{/cart}">Cart</a></li>
+            <li><a th:href="@{/orders}">Orders</a></li>
+            <li><a th:href="@{/info}">Information</a></li>
+            <!-- 如果用户已登录，显示用户名和注销链接 -->
+            <li>
+                <span th:text="${user.username}" style="color: #e80f0f "></span>
+                <a th:href="@{/logout}">Logout</a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main>
+<section>
+    <h2>Personal Information</h2>
+    <table>
+        <tr>
+            <th>Email</th>
+            <td th:text="${user.email}"></td>
+        </tr>
+        <tr>
+            <th>Username</th>
+            <td th:text="${user.username}"></td>
+        </tr>
+    </table>
+
+    <h2>Address Information</h2>
+    <tr>
+        <td colspan="2">
+            <form th:action="@{/add-address}" method="get">
+                <button type="submit">Add Address</button>
+            </form>
+        </td>
+    </tr>
+    <table>
+        <thead>
+        <tr>
+            <th>Recipient Name</th>
+            <th>Street Address</th>
+            <th>Area</th>
+            <th>City</th>
+            <th>Province</th>
+            <th>Phone Number</th>
+        </tr>
+        </thead>
+        <tbody>
+        <!-- 使用Thymeleaf的迭代器来遍历地址列表 -->
+        <tr th:each="address : ${addresses}">
+            <td th:text="${address.recipient_name}"></td>
+            <td th:text="${address.street_address}"></td>
+            <td th:text="${address.area}"></td>
+            <td th:text="${address.city}"></td>
+            <td th:text="${address.province}"></td>
+            <td th:text="${address.phone_number}"></td>
+            <td style="display: flex;">
+                <form th:action="@{'/edit-address/'+${address.address_id}}" method="get">
+                    <button type="submit">Edit</button>
+                </form>
+
+                <form th:action="@{/remove-address}" method="post" onsubmit="return confirm('Are you sure you want to remove this address?');" style="display: inline;">
+                    <input type="hidden" th:name="addressId" th:value="${address.address_id}" />
+                    <button type="submit">Remove</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</section>
+</main>
+</body>
+</html>

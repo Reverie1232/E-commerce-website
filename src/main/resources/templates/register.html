@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register Page</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/styles.css}" />
+</head>
+<body>
+<header>
+    <h1>Welcome to our E-commerce Website</h1>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+</header>
+<main>
+    <section>
+        <h2>Register</h2>
+        <form th:action="@{/register}" method="post" onsubmit="return false;">
+            <label for="email">Email:</label>
+            <input type="text" id="email" name="email" placeholder="E-mail address" required>
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" placeholder="username" required>
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" placeholder="password" required>
+            <label for="confirm-password">Confirm Password:</label>
+            <input type="password" id="confirm-password" name="confirmPassword" placeholder="confirmPassword" required>
+            <button type="submit" id="registry">Register</button>
+        </form>
+        <p>Already have an account? <a th:href="@{/login}">Login here</a>.</p>
+    </section>
+</main>
+<footer>
+    <p>&copy; 2023 E-commerce Website</p>
+</footer>
+<script type="text/javascript" charset="UTF-8">
+    // 注册账号
+    $("#registry").on("click", function (){
+        $.ajax({
+            url: "/user/create",
+            type: "POST",
+            data: {
+                email: $("#email").val(),
+                username: $("#username").val(),
+                password: $("#password").val(),
+                confirm_password: $("#confirm-password").val()
+            },
+            resultType: "JSON",
+            success: function (result){
+                alert(result.message);
+            },
+            error: function (result){
+
+            }
+        })
+    })
+</script>
+</body>
+</html>

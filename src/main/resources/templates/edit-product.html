@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Merchant Dashboard</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/indexstyle.css}" />
+    <!-- 引入jQuery，如果你不使用jQuery，可以使用原生JavaScript -->
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+</head>
+<body>
+<header>
+    <h1>Edit Product</h1>
+    <nav>
+        <ul>
+            <li><a th:href="@{/merchant}">Products</a></li>
+            <li><a th:href="@{/user-logs}">UserLogs</a></li>
+            <li><a th:href="@{/user-orders}">UserOrders</a></li>
+        </ul>
+    </nav>
+</header>
+<main>
+    <section>
+<h2>Edit Product</h2>
+<form  th:action="@{/edit}" method="post" onsubmit="return false">
+    <table>
+        <tr>
+            <td>
+                <input type="hidden" id="productId" name="productId" th:value="${goods.id}" />
+                <label for="productName">Product Name:</label>
+            </td>
+            <td>
+                <input type="text" id="productName" name="productName" th:value="${goods.name}" required>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label for="productDescription">Product Description:</label>
+            </td>
+            <td>
+                <input type="text" id="productDescription" name="productDescription" th:value="${goods.description}" required>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label for="productPrice">Product Price:</label>
+            </td>
+            <td>
+                <input type="number" id="productPrice" name="productPrice" th:value="${goods.price}" oninput="validity.valid||(value='')" required min="0" step="0.01">
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label for="productStock">Product Stock:</label>
+            </td>
+            <td>
+                <input type="number" id="productStock" name="productStock" th:value="${goods.stock}" oninput="validity.valid||(value='')" required min="1" step="1">
+            </td>
+        </tr>
+    </table>
+    <button type="submit" id="edit">Update Product</button>
+</form>
+<script type="text/javascript" charset="UTF-8">
+    $("#edit").on("click", function (){
+        $.ajax({
+            url: "/update-product",
+            type: "POST",
+            data: {
+                productId: document.getElementById('productId').value,
+                productName : document.getElementById('productName').value,
+                productDescription : document.getElementById('productDescription').value,
+                productPrice : document.getElementById('productPrice').value,
+                productStock : document.getElementById('productStock').value,
+            },
+            resultType: "JSON",
+            success: function (result){
+                alert(result.message);
+                if(200 === result.code){
+                    window.location.href = "/merchant";
+                }
+            },
+            error: function (result){
+
+            }
+        })
+    })
+</script>
+    </section>
+</main>
+</body>
+</html>

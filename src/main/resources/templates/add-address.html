@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Address</title>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/indexstyle.css}" />
+</head>
+<script src="/js/province.js" type="text/javascript" charset="UTF-8"></script>
+<header>
+    <h1>Edit Address</h1>
+    <nav>
+        <ul>
+            <li><a th:href="@{/goods}">Products</a></li>
+            <li><a th:href="@{/cart}">Cart</a></li>
+            <li><a th:href="@{/orders}">Orders</a></li>
+            <li><a th:href="@{/info}">Information</a></li>
+            <!-- 如果用户已登录，显示用户名和注销链接 -->
+        </ul>
+    </nav>
+</header>
+<main>
+    <body onload="getProvince()">
+    <h2>Edit Address</h2>
+    <form  th:action="@{/add}" method="post" onsubmit="return false">
+        <input type="hidden" id="userId" name="userId" th:value="${userId}" />
+        <label for="province"></label><select id="province" onchange="chooseProvince(this)">
+        <option value="null">请选择省</option>
+    </select>
+        <label for="city"></label><select id="city" onchange="chooseCity(this)">
+        <option value="null">请选择市</option>
+    </select>
+        <label for="area"></label><select id="area">
+        <option value="null">请选择区</option>
+    </select>
+        <!-- 手动输入详细地址 -->
+        <label for="streetAddress">streetAddress：</label>
+        <input type="text" id="streetAddress" required>
+
+        <!-- 其他输入框，如邮政编码等 -->
+        <label for="recipientName">recipientName:</label>
+        <input type="text" id="recipientName" required>
+
+        <label for="phoneNumber">phoneNumber:</label>
+        <input type="text" id="phoneNumber" required>
+        <!-- 提交按钮 -->
+        <button type="submit" id="add">Submit</button>
+    </form>
+
+    <script type="text/javascript" charset="UTF-8">
+        $("#add").on("click", function (){
+            // 添加前端验证逻辑
+            if (!validateForm()) {
+                return;
+            }
+            $.ajax({
+                url: "/add-address-form",
+                type: "POST",
+                data: {
+                    userId: document.getElementById('userId').value,
+                    province: document.getElementById('province').value,
+                    city: document.getElementById('city').value,
+                    area: document.getElementById('area').value,
+                    streetAddress: document.getElementById('streetAddress').value,
+                    recipientName: document.getElementById('recipientName').value,
+                    phoneNumber: document.getElementById('phoneNumber').value
+                },
+                resultType: "JSON",
+                success: function (result){
+                    alert(result.message);
+                    if(200 === result.code){
+                        window.location.href = "/info";
+                    }
+                },
+                error: function (result){
+
+                }
+            })
+        })
+
+        // 前端验证逻辑
+        function validateForm() {
+            var province = $("#province").val();
+            var city = $("#city").val();
+            var area = $("#area").val();
+
+            // 在这里添加自定义的验证逻辑
+            if (province === "null" || city === "null" || area === "null") {
+                alert("请填写或选择所有必填字段！");
+                return false;
+            }
+
+            return true;
+        }
+    </script>
+    </body>
+</main>
+</html>

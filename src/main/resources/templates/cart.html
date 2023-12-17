@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shopping Cart</title>
+  <link rel="stylesheet" type="text/css" th:href="@{/css/indexstyle.css}" />
+  <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+</head>
+<body>
+<header>
+  <h1>Your Shopping Cart</h1>
+  <nav>
+    <ul>
+      <li><a th:href="@{/goods}">Products</a></li>
+      <li><a th:href="@{/cart}">Cart</a></li>
+      <li><a th:href="@{/orders}">Orders</a></li>
+      <li><a th:href="@{/info}">Information</a></li>
+      <!-- 如果用户已登录，显示用户名和注销链接 -->
+      <li th:if="${loggedInUser != null}">
+        <span th:text="${loggedInUser.username}" style="color: #e80f0f "></span>
+        <a th:href="@{/logout}">Logout</a>
+      </li>
+
+      <!-- 如果用户未登录，显示登录链接 -->
+      <li th:if="${loggedInUser == null}">
+        <a th:href="@{/login}">Login</a>
+      </li>
+    </ul>
+  </nav>
+</header>
+<main>
+  <section>
+    <h2>Cart Items</h2>
+    <table>
+      <thead>
+      <tr>
+        <th>Product Name</th>
+        <th>Price</th>
+        <th>Quantity</th>
+        <th>Total</th>
+        <th>Action</th>
+      </tr>
+      </thead>
+      <tbody>
+      <style>
+        /* 设置超链接样式，去掉蓝色字体和下划线 */
+        a {
+          color: inherit;
+          text-decoration: none;
+        }
+      </style>
+      <!-- Loop through cart items -->
+      <tr th:each="cartItem, status : ${carts}">
+        <td>
+          <!-- 使用超链接包裹商品名称，指向商品详情页 -->
+          <a th:href="@{/goods/{id}(id=${cartItem.goods.id})}">
+            <span th:text="${cartItem.goods.name}"></span>
+          </a>
+        </td>
+        <td th:text="${cartItem.goods.price}"></td>
+        <td th:text="${cartItem.quantity}"></td>
+        <td th:text="${cartItem.goods.price * cartItem.quantity}"></td>
+        <td>
+          <form th:action="@{/cart/remove}" method="post" onsubmit="return confirm('Are you sure you want to remove this item from the cart?');">
+            <input type="hidden" name="cartItemId" th:value="${cartItem.id}" />
+            <button type="submit">Remove</button>
+          </form>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </section>
+  <section>
+    <h2>Total Price</h2>
+    <p th:text="'Total: ' + ${totalPrice}"></p>
+    <form th:action="@{/cart/checkout}" method="post" onsubmit="return confirm('Are you sure you want to check out the cart?');">
+      <button type="submit">Checkout</button>
+    </form>
+  </section>
+</main>
+<footer>
+  <p>&copy; 2023 Your E-commerce Website</p>
+</footer>
+</body>
+</html>

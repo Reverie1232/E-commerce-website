@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>结算成功</title>
+</head>
+<body>
+<div>
+    <h2>结算成功，正在发货通知</h2>
+    <p>
+        亲爱的用户，您好！<br>
+        感谢您在我们的网站购物。您的订单已成功结算，并正在准备发货。<br>
+        以下是订单详情：
+    </p>
+    <section>
+        <h2>Order Information</h2>
+        <table>
+            <tr>
+                <th>Order Date:</th>
+                <td th:text="${order.order_date}"></td>
+            </tr>
+            <tr>
+                <th>Total Price:</th>
+                <td th:text="${order.totalPrice}"></td>
+            </tr>
+            <tr>
+                <th>Order Items:</th>
+                <td>
+                    <table>
+                        <tr>
+                            <th>Name</th>
+                            <th>Unit Price</th>
+                            <th>Quantity</th>
+                        </tr>
+                        <tr th:each="item, i : ${Items}">
+                            <td th:text="${item.name}"></td>
+                            <td th:text="${item.price}"></td>
+                            <td th:text="${quantities[i.index]}"></td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+    </section>
+
+    <section>
+        <h2>Shipping Address</h2>
+        <table>
+            <tr>
+                <th>Recipient Name:</th>
+                <td th:text="${address.recipient_name}"></td>
+            </tr>
+            <tr>
+                <th>Street Address:</th>
+                <td th:text="${address.street_address}"></td>
+            </tr>
+            <tr>
+                <th>Area:</th>
+                <td th:text="${address.area}"></td>
+            </tr>
+            <tr>
+                <th>City:</th>
+                <td th:text="${address.city}"></td>
+            </tr>
+            <tr>
+                <th>Province:</th>
+                <td th:text="${address.province}"></td>
+            </tr>
+            <!-- Add more address information as needed -->
+        </table>
+    </section>
+    <p>
+        您可以随时登录我们的E-commerce查看订单状态。如果您有任何疑问或需要帮助，请随时联系我们的客服团队。<br>
+        感谢您选择我们的服务，祝您购物愉快！
+    </p>
+</div>
+</body>
+</html>
