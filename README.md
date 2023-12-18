@@ -3,12 +3,12 @@
 ### 学号：202130442266 姓名：张尔彦
 
 ### 用户测试
-- 登录地址：[http://8.134.166.18:8080/login](http://8.134.166.18:8080/login){:target="_blank"}
+- 登录地址：[http://8.134.166.18:8080/login](http://8.134.166.18:8080/login)
 - 邮箱：1097094336@qq.com
 - 密码：123
 
 ### 商户测试
-- 登陆地址：
+- 登陆地址：[http://8.134.166.18:8080/merchantLogin](http://8.134.166.18:8080/merchantLogin)
 - 用户名：web
 - 密码：123
 
@@ -16,7 +16,7 @@
 
 ### 1. `src/main/java/com/` 文件夹
 
-- `com.example.controller/`：包含控制器类，处理 HTTP 请求和响应。
+- `com.example.controller/`：包含[控制器类](src/main/java/com/example/controller/)，处理 HTTP 请求和响应。
 - `com.example.service/`：包含服务层代码，处理业务逻辑。
 - `com.example.pojo/`：存放数据模型（POJO）类。
 - `com.example.mapper/`：包含 MyBatis Mapper 接口。
