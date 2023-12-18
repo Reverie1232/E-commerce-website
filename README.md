@@ -25,7 +25,7 @@
 
 - `application.yml`：[应用程序的配置文件](src/main/resources/application.yml)，包含数据库连接信息、邮箱配置等。
 - `static/`：存放[静态资源文件](src/main/resources/static/)，如 CSS 和 JavaScript。
-- `templates/`：存放[模板文件](src/main/resources/temolates/)，用于视图渲染（ Thymeleaf 模板）。
+- `templates/`：存放[模板文件](src/main/resources/templates/)，用于视图渲染（ Thymeleaf 模板）。
 
  ### 3. `pom.xml`
 - Maven [项目的配置文件](pom.xml)，定义了项目的依赖、插件和其他构建设置。
