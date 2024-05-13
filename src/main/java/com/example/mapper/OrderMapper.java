@@ -2,6 +2,7 @@ package com.example.mapper;
 
 import com.example.pojo.Merchant;
 import com.example.pojo.Order;
+import com.example.pojo.ProvinceSales;
 import com.example.service.OrderService;
 import org.apache.ibatis.annotations.*;
 
@@ -41,4 +42,11 @@ public interface OrderMapper {
             @Result(property = "order_date", column = "order_date"),
     })
     List<Order> getAllOrders();
+
+    @Select("SELECT a.province, SUM(o.totalPrice) AS sales " +
+            "FROM orders o " +
+            "JOIN addresses a ON o.shipping_address_id = a.address_id " +
+            "GROUP BY a.province")
+    List<ProvinceSales> selectProvinceSales();
+
 }

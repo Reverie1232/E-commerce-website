@@ -4,6 +4,7 @@ import com.example.mapper.OrderItemsMapper;
 import com.example.mapper.OrderMapper;
 import com.example.pojo.Order;
 import com.example.pojo.OrderItem;
+import com.example.pojo.ProvinceSales;
 import jakarta.annotation.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -41,11 +42,12 @@ public class OrderService {
         return orderMapper.getCurrentOrderId();
     }
     //新增订单商品数据
-    public void insertOrderItem(int order_id, int goods_id, int quantity){
+    public void insertOrderItem(int order_id, int goods_id, int quantity, int goods_seller){
         OrderItem orderItem = new OrderItem();
         orderItem.setOrder_id(order_id);
         orderItem.setGoods_id(goods_id);
         orderItem.setQuantity(quantity);
+        orderItem.setSeller(goods_seller);
         orderItemsMapper.insertOrderItem(orderItem);
     }
     //获取订单详细信息
@@ -59,5 +61,9 @@ public class OrderService {
 
     public int getCurrentOrderId() {
         return orderMapper.getCurrentOrderId();
+    }
+
+    public List<ProvinceSales> getProvinceSales() {
+        return  orderMapper.selectProvinceSales();
     }
 }

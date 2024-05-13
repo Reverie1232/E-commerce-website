@@ -15,4 +15,5 @@ public class UserLog {
     private LocalDateTime timestamp;
     private String goods_name;
     private String action;
+    private int seller;
 }

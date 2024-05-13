@@ -16,7 +16,7 @@ public interface OrderItemsMapper {
     })
     List<OrderItem> getItemsByOrderId(@Param("order_id") int order_id);
 
-    @Insert("INSERT INTO order_items (order_id, goods_id, quantity) VALUE (" +
-            "#{order_id}, #{goods_id}, #{quantity})")
+    @Insert("INSERT INTO order_items (order_id, goods_id, quantity, seller) VALUE (" +
+            "#{order_id}, #{goods_id}, #{quantity}, #{seller})")
     void insertOrderItem(OrderItem orderItem);
 }

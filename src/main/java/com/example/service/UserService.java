@@ -3,17 +3,15 @@ package com.example.service;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.crypto.SecureUtil;
-import com.example.mapper.CartMapper;
 import com.example.mapper.UserMapper;
-import com.example.pojo.Cart;
 import com.example.pojo.User;
 import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestParam;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
@@ -26,6 +24,8 @@ public class UserService {
     private UserMapper userMapper;
     @Resource
     private MailService mailService;
+    @Resource
+    private LogsService logsService;
     /**
      * 注册账号
      *
@@ -86,7 +86,7 @@ public class UserService {
      * 登陆账号
      *
      */
-    public Map<String, Object> loginAccount(User user, HttpSession session){
+    public Map<String, Object> loginAccount(User user, HttpSession session, HttpServletRequest request){
         Map<String, Object> resultMap = new HashMap<>();
         // 根据邮箱查询用户
         List<User> userList = userMapper.selectUserByEmail(user.getEmail());
@@ -115,6 +115,7 @@ public class UserService {
         resultMap.put("code", 200);
         resultMap.put("message", "登陆成功");
         //session记录用户的id
+        logsService.login_log(u.getId(), request.getRemoteAddr(), LocalDateTime.now());
         session.setAttribute("user_id", u.getId());
         return resultMap;
     }

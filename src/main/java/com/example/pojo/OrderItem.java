@@ -12,4 +12,5 @@ public class OrderItem {
     private int order_id;
     private int goods_id;
     private int quantity;
+    private int seller;
 }

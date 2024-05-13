@@ -98,8 +98,8 @@ public class CartController {
             //添加订单商品信息
             for (Cart cart : cartList) {
                 Goods goods = goodsService.getGoodsById(cart.getGoods_id());
-                userLogService.logUserAction(loggedInUser.getUsername(), goods.getName(), "BUY");
-                orderService.insertOrderItem(order_id, goods.getId(), cart.getQuantity());
+                userLogService.logUserAction(loggedInUser.getUsername(), goods.getName(), "BUY", goods.getSeller());
+                orderService.insertOrderItem(order_id, goods.getId(), cart.getQuantity(), goods.getSeller());
             }
             //修改货物库存
             cartService.updateGoodsStock(cartList);

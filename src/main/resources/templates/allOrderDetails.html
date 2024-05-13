@@ -11,16 +11,9 @@
     <h1>Order Details</h1>
     <nav>
         <ul>
-            <li><a th:href="@{/goods}">Products</a></li>
-            <li><a th:href="@{/cart}">Cart</a></li>
-            <li><a th:href="@{/orders}">Orders</a></li>
-            <li><a th:href="@{/info}">Information</a></li>
-            <!-- 如果用户已登录，显示用户名和注销链接 -->
-            <li th:if="${user != null}">
-                <span th:text="${user.username}" style="color: #e80f0f "></span>
-                <a th:href="@{/logout}">Logout</a>
-            </li>
-
+            <li><a th:href="@{/merchant}">Products</a></li>
+            <li><a th:href="@{/user-logs}">UserLogs</a></li>
+            <li><a th:href="@{/user-orders}">UserOrders</a></li>
         </ul>
     </nav>
 </header>

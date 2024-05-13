@@ -46,7 +46,9 @@ section {
 }
 
 footer {
+
     background-color: #333;
+    opacity: 0;
     color: #fff;
     text-align: center;
     padding: 1em 0;
@@ -54,4 +56,19 @@ footer {
     bottom: 0;
     width: 100%;
 }
+.salesperson-info {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px; /* 设置底部边距 */
+}
+
+.salesperson-info span {
+    margin-right: 10px; /* 设置右侧边距 */
+}
+
+.salesperson-info button {
+    margin-right: 10px; /* 设置按钮之间的右侧边距 */
+    margin-left: auto; /* 将按钮放置在行的末尾 */
+}
+
 

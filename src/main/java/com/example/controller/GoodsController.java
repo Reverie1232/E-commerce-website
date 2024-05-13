@@ -2,6 +2,7 @@ package com.example.controller;
 
 import com.example.mapper.UserMapper;
 import com.example.pojo.Goods;
+import com.example.pojo.MonthSales;
 import com.example.pojo.User;
 import com.example.service.GoodsService;
 import com.example.service.UserLogService;
@@ -9,13 +10,17 @@ import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpSession;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 public class GoodsController {
@@ -58,8 +63,23 @@ public class GoodsController {
             User loggedInUser = userMapper.selectUserByUserId(user_id);
             model.addAttribute("loggedInUser", loggedInUser);
             String username = loggedInUser.getUsername();
-            userLogService.logUserAction(username, goods.getName(), "VIEW");
+            userLogService.logUserAction(username, goods.getName(), "VIEW", goods.getSeller());
         }
         return "goodsDetail";
     }
+
+    @GetMapping("/goods/stock")
+    public ResponseEntity<Map<String, Object>> getGoodsStatus(@RequestParam("goodsId") Integer goodsId) {
+        // 这里根据商品ID查询数据库或其他存储来获取商品状态信息
+        // 假设商品状态信息保存在一个 Map 中，键为商品名，值为库存
+        Map<String, Object> statusInfo = new HashMap<>();
+        Goods goods = goodsService.getGoodsById(goodsId);
+        statusInfo.put("goodsName", goods.getName()); // 假设商品名称为 "商品名称"
+        statusInfo.put("stock", goods.getStock()); // 假设库存为 100
+        // 返回包含商品状态信息的 ResponseEntity 对象
+        return ResponseEntity.ok(statusInfo);
+    }
+
+
+
 }

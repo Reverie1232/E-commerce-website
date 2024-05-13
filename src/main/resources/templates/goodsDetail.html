@@ -50,6 +50,7 @@
 </footer>
 
 <script type="text/javascript" th:inline="javascript">
+    var startTime = new Date();
     $(document).ready(function (){
         updateTotalPrice();
     })
@@ -85,6 +86,26 @@
             }
         });
     }
+    //记录浏览商品时长
+    window.onbeforeunload = function () {
+        var stayDuration = Math.floor((new Date() - startTime) / 1000);
+        var goods_id = $("#goods_id").val();
+        $.ajax({
+            url:"/record_stay_duration",
+            type:"POST",
+            data:{
+                goods_id: goods_id,
+                stayDuration:stayDuration,
+            },
+            success:function (result){
+                // 处理成功响应
+            },
+            error:function (result){
+                // 处理错误响应
+            }
+        });
+    }
+
 </script>
 </body>
 </html>

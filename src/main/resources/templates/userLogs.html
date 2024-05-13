@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Log Page</title>
     <link rel="stylesheet" type="text/css" th:href="@{/css/indexstyle.css}" />
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 </head>
 <body>
 <header>
@@ -14,6 +15,7 @@
             <li><a th:href="@{/merchant}">Products</a></li>
             <li><a th:href="@{/user-logs}">UserLogs</a></li>
             <li><a th:href="@{/user-orders}">UserOrders</a></li>
+            <li><a href="#" onclick="logout()">Logout</a></li>
         </ul>
     </nav>
 </header>
@@ -49,7 +51,18 @@
         </table>
     </section>
 </main>
-
+<script>
+    function logout() {
+        $.get('/merchant/logout') // 发送注销请求到后端
+            .done(function(response) {
+                alert(response); // 显示注销成功提示
+                window.location.href = '/merchant';
+            })
+            .fail(function(error) {
+                alert("Failed to logout: " + error.responseText); // 显示注销失败提示
+            });
+    }
+</script>
 <footer>
     <p>&copy; 2023 Your E-commerce Website</p>
 </footer>

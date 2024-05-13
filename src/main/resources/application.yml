@@ -1,8 +1,8 @@
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://8.134.166.18:3306/example?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf8&useSSL=false&allowPublicKeyRetrieval=true
-    username: root
+    url: jdbc:mysql://47.121.31.176:3306/web?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf8&useSSL=false&allowPublicKeyRetrieval=true
+    username: web
     password: Zhang1022
   mail:
     protocol: smtp # 邮件协议

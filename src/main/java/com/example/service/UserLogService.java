@@ -1,7 +1,6 @@
 package com.example.service;
 
 import com.example.mapper.UserLogMapper;
-import com.example.mapper.UserMapper;
 import com.example.pojo.UserLog;
 import jakarta.annotation.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +8,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class UserLogService {
@@ -20,20 +18,21 @@ public class UserLogService {
          this.userLogMapper = userLogMapper;
      }
 
-    public void logUserAction(String username, String goods_name, String action){
+    public void logUserAction(String username, String goods_name, String action, int seller){
         UserLog userLog = new UserLog();
         userLog.setUsername(username);
         userLog.setTimestamp(LocalDateTime.now());
         userLog.setGoods_name(goods_name);
         userLog.setAction(action);
+        userLog.setSeller(seller);
         userLogMapper.insertUserLog(userLog);
     }
 
-    public List<UserLog> getUserLog(){
-        return userLogMapper.getUserLog();
+    public List<UserLog> getUserLog(int seller){
+        return userLogMapper.getUserLog(seller);
     }
 
-    public void clearLogs() {
-        userLogMapper.clearLogs();
+    public void clearLogs(int seller) {
+        userLogMapper.clearLogs(seller);
     }
 }

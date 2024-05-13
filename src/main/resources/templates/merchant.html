@@ -17,6 +17,7 @@
             <li><a th:href="@{/merchant}">Products</a></li>
             <li><a th:href="@{/user-logs}">UserLogs</a></li>
             <li><a th:href="@{/user-orders}">UserOrders</a></li>
+            <li><a href="#" onclick="logout()">Logout</a></li>
         </ul>
     </nav>
 </header>
@@ -77,7 +78,18 @@
         </form>
     </section>
 </main>
-
+<script>
+    function logout() {
+        $.get('/merchant/logout') // 发送注销请求到后端
+            .done(function(response) {
+                alert(response); // 显示注销成功提示
+                window.location.href = '/merchant';
+            })
+            .fail(function(error) {
+                alert("Failed to logout: " + error.responseText); // 显示注销失败提示
+            });
+    }
+</script>
 </body>
 </html>
 

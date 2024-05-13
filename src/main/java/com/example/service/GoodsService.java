@@ -2,6 +2,7 @@ package com.example.service;
 
 import com.example.mapper.GoodsMapper;
 import com.example.pojo.Goods;
+import com.example.pojo.MonthSales;
 import jakarta.annotation.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -54,5 +55,13 @@ public class GoodsService {
         resultMap.put("code", 200);
         resultMap.put("message", "Edit Successfully");
         return resultMap;
+    }
+
+    public List<Goods> getGoodsBySeller(int seller) {
+        return goodsMapper.getGoodsBySeller(seller);
+    }
+
+    public List<MonthSales> getMonthSalesById(int id) {
+        return goodsMapper.getMonthSalesById(id);
     }
 }

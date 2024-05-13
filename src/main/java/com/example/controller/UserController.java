@@ -34,8 +34,8 @@ public class UserController {
      *
      */
     @PostMapping ("login")
-    public Map<String, Object> loginAccount(User user, HttpSession session){
-        return userService.loginAccount(user, session);
+    public Map<String, Object> loginAccount(User user, HttpSession session, HttpServletRequest request){
+        return userService.loginAccount(user, session, request);
     }
 
     /**

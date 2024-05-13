@@ -18,7 +18,7 @@ public class UserLogController {
         if(name == null){
             return "redirect:/merchantLogin";
         }
-        List<UserLog> userLogs = userLogService.getUserLog();
+        List<UserLog> userLogs = userLogService.getUserLog((Integer) session.getAttribute("seller"));
         model.addAttribute("userLogs", userLogs);
         return "userLogs";
     }
