@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard</title>
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
+  <script src="/js/china.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+  <script src="https://cdn.staticfile.net/Chart.js/3.9.1/chart.js"></script>
+
+  <link rel="stylesheet" type="text/css" th:href="@{/css/indexstyle.css}">
+  <style>
+    .salesperson-info {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px; /* 设置底部边距 */
+    }
+
+    .salesperson-info span {
+      margin-right: 10px; /* 设置右侧边距 */
+    }
+
+    .goods-info {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px; /* 设置底部边距 */
+    }
+
+    .goods-info-item {
+      margin-right: 10px; /* 设置右侧边距 */
+    }
+
+    /* Style for modal dialog */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgb(0,0,0);
+      background-color: rgba(0,0,0,0.4);
+      padding-top: 60px;
+    }
+
+    /* Modal content */
+    .modal-content {
+      background-color: #fefefe;
+      margin: 5% auto;
+      padding: 20px;
+      border: 1px solid #888;
+      width: 80%;
+    }
+
+    /* Close button */
+    .close {
+      color: #aaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+    }
+
+    .close:hover,
+    .close:focus {
+      color: black;
+      text-decoration: none;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+<header>
+  <h1>Admin Dashboard</h1>
+  <nav>
+    <ul>
+      <li><a href="#" onclick="showSection('salesperson-management')">Salesperson Management</a></li>
+      <li><a href="#" onclick="showSection('product-category')">Product Category</a></li>
+      <li><a href="#" onclick="showChinaMap()">Sales Map</a> </li>
+      <li><a href="#" onclick="logout()">Logout</a></li>
+    </ul>
+  </nav>
+</header>
+<main>
+  <section id="salesperson-management">
+    <h2>Salesperson Management</h2>
+    <!-- Content for Salesperson Management section -->
+    <button onclick="showAddSalespersonModal()">Add Salesperson</button>
+    <div id="salesperson-list">
+      <!-- Salesperson list will be displayed here -->
+    </div>
+  </section>
+  <section id="product-category" style="display:none;">
+    <h2>Product Category</h2>
+    <!-- Content for Product Category section -->
+  </section>
+  <!-- 显示地图的 section -->
+  <section id="china-map-section" style="display: none;">
+    <h2>China Map</h2>
+    <div id="chinaMap" style="width: 800px; height: 600px;"></div>
+  </section>
+</main>
+<footer>
+  <p>&copy; 2023 Admin Dashboard</p>
+</footer>
+
+
+
+<!-- Modal dialog for adding salesperson -->
+<div id="addSalespersonModal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeAddSalespersonModal()">&times;</span>
+    <h2>Add Salesperson</h2>
+    <form id="add-salesperson-form">
+      <label for="salesperson-name">Name:</label>
+      <input type="text" id="salesperson-name" name="salesperson-name" required><br>
+      <label for="salesperson-password">Password:</label>
+      <input type="password" id="salesperson-password" name="salesperson-password" required><br>
+      <button type="submit">Add Salesperson</button>
+    </form>
+  </div>
+</div>
+
+<!-- 模态框：库存信息 -->
+<div id="stock-modal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeStockModal()">&times;</span>
+    <h2>Stock Information</h2>
+    <div id="stock-info"></div>
+  </div>
+</div>
+
+<!-- 模态框：月销量信息 -->
+<div id="monthly-sales-modal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeMonthlySalesModal()">&times;</span>
+    <h2>Monthly Sales Information</h2>
+    <canvas id="barChart"></canvas>
+  </div>
+</div>
+
+<script>
+  //获取各省份销售额
+  function fetchProvinceSales() {
+    // 发送 AJAX 请求获取数据
+    $.ajax({
+      url: '/admin/map', // 后端处理请求的URL
+      type: 'GET', // 请求类型为GET
+      success: function(response) {
+        // 成功获取到数据后，调用绘制中国地图的函数
+        drawChinaMap(response);
+      },
+      error: function(xhr, status, error) {
+        // 请求失败时的处理逻辑
+        alert('Failed to fetch province sales data: ' + error);
+      }
+    });
+  }
+
+  // Function to fetch and display salesperson list
+  $(document).ready(function(){
+    // 页面加载时获取销售人员列表及商品列表
+    fetchSalespersons();
+    fetchGoods();
+    fetchProvinceSales();
+  });
+
+  //添加销售人员
+  document.getElementById('add-salesperson-form').addEventListener('submit', function(event) {
+    event.preventDefault(); // 阻止表单默认提交行为
+
+    // 获取表单数据
+    var name = document.getElementById('salesperson-name').value;
+    var password = document.getElementById('salesperson-password').value;
+
+    // 发送 AJAX 请求到后端
+    $.ajax({
+      url: "/admin/addSalesperson",
+      type: "POST",
+      data: { name: name, password: password },
+      success: function(response) {
+        alert(response); // 成功添加销售人员
+        closeAddSalespersonModal(); // 关闭模态框
+        fetchSalespersons(); // 重新加载销售人员列表
+      },
+      error: function(xhr, status, error) {
+        alert("Failed to add salesperson: " + xhr.responseText); // 添加销售人员失败
+      }
+    });
+  });
+
+  // Function to fetch and display salesperson list
+  function fetchGoods() {
+    var GoodsListDiv = $('#product-category');
+
+    $.get("/admin/goods", function(goodsList){
+      goodsList.forEach(function(goods) {
+        GoodsListDiv.append(
+                `<div class="goods-info">
+    <div class="goods-info-item">
+        <span>ID: ${goods.id}</span>
+    </div>
+    <div class="goods-info-item">
+        <span>Name: ${goods.name}</span>
+    </div>
+    <div class="goods-info-item">
+        <span>Price: ${goods.price}</span>
+    </div>
+    <button style="margin-left: auto;"  onclick="fetchSales(${goods.id})">Sales</button>
+    <button  onclick="fetchStock(${goods.id})">Stock</button>
+</div>
+`
+        );
+      });
+    });
+  }
+
+  // Function to fetch and display salesperson list
+  function fetchSalespersons() {
+    var salespersonListDiv = $('#salesperson-list');
+    salespersonListDiv.empty(); // 清空销售人员列表
+
+    $.get("/admin/salespersons", function(salespersons){
+      salespersons.forEach(function(salesperson) {
+        salespersonListDiv.append(
+                `
+                    <div class="salesperson-info">
+                    <span>ID: ${salesperson.id}</span>
+                    <span>Name: ${salesperson.name}</span>
+                    <button onclick="resetSalesperson(${salesperson.id})">Reset</button>
+                    <button onclick="deleteSalesperson(${salesperson.id})">Delete</button>
+                </div>`
+        );
+      });
+    });
+  }
+
+
+  // Function to reset salesperson
+  function resetSalesperson(salespersonId) {
+    $.post("/admin/" + salespersonId + "/reset")
+            .done(function (response) {
+              alert(response);
+              //重置后重新加载销售人员列表
+              fetchSalespersons();
+            })
+            .fail(function (error) {
+              alert("Failed to reset salesperson: " + error.responseText);
+            });
+  }
+
+  // Function to delete salesperson
+  function deleteSalesperson(salespersonId) {
+    $.ajax({
+      url:"/admin/delete/" + salespersonId,
+      type:"DELETE",
+      success: function (response) {
+        alert(response);
+        //删除成功后重新加载销售人员列表
+        fetchSalespersons();
+      },
+      error: function (error) {
+        alert("Failed to delete salesperson: " + error.responseText);
+      }
+    });
+  }
+
+
+  function drawChinaMap() {
+    // 发送 AJAX 请求获取数据
+    $.ajax({
+      url: '/admin/map', // 后端处理请求的URL
+      type: 'GET', // 请求类型为GET
+      success: function(data) {
+        // 使用ECharts绘制中国地图
+        var myChart = echarts.init(document.getElementById('chinaMap'));
+        // 地图数据
+        var mapData = [];
+
+        // 填充地图数据
+        data.forEach(function(item) {
+          mapData.push({
+            name: item.province,
+            value: item.sales // 使用销售金额作为值
+          });
+        });
+        // 配置地图参数
+        var option = {
+          title: {
+            text: '中国地图 - 销售金额占比',
+          },
+          tooltip: {
+            trigger: 'item',
+            formatter: '{b}<br/>{c}元'
+          },
+          visualMap: {
+            min: 0,
+            max: 100000,
+            left: 'left',
+            top: 'bottom',
+            text: ['High', 'Low'],
+            calculable: true
+          },
+          series: [
+            {
+              name: '销售金额',
+              type: 'map',
+              mapType: 'china',
+              roam: false,
+              label: {
+                show: true,
+                formatter: '{b}'
+              },
+              data: mapData
+            }
+          ]
+        };
+
+        // 使用配置项绘制地图
+        myChart.setOption(option);
+      },
+      error: function(xhr, status, error) {
+        // 请求失败时的处理逻辑
+        alert('Failed to fetch China map data: ' + error);
+      }
+    });
+
+  }
+
+  // 点击导航链接显示地图
+  function showChinaMap() {
+    // Hide all sections
+    var sections = document.querySelectorAll('section');
+    sections.forEach(function(section) {
+      section.style.display = 'none';
+    });
+    document.getElementById('china-map-section').style.display = 'block';
+    // 调用绘制地图的函数
+    drawChinaMap();
+  }
+
+
+  function showSection(sectionId) {
+    // Hide all sections
+    var sections = document.querySelectorAll('section');
+    sections.forEach(function(section) {
+      section.style.display = 'none';
+    });
+    // Show selected section
+    var selectedSection = document.getElementById(sectionId);
+    selectedSection.style.display = 'block';
+  }
+
+  function showAddSalespersonModal() {
+    // Display modal dialog for adding salesperson
+    var modal = document.getElementById('addSalespersonModal');
+    modal.style.display = 'block';
+  }
+
+  function showStockModal() {
+    // Display modal dialog for adding salesperson
+    var modal = document.getElementById('stock-modal');
+    modal.style.display = 'block';
+  }
+
+  // 打开模态框
+  function showMonthlySalesModal() {
+    document.getElementById('monthly-sales-modal').style.display = 'block';
+  }
+
+
+  function closeAddSalespersonModal() {
+    // Close modal dialog for adding salesperson
+    var modal = document.getElementById('addSalespersonModal');
+    modal.style.display = 'none';
+  }
+
+  function closeStockModal() {
+    // Close modal dialog for adding salesperson
+    var modal = document.getElementById('stock-modal');
+    modal.style.display = 'none';
+  }
+
+  function closeMonthlySalesModal() {
+    // Close modal dialog for adding salesperson
+    var modal = document.getElementById('monthly-sales-modal');
+    modal.style.display = 'none';
+  }
+
+  function logout() {
+    $.get('/admin/logout') // 发送注销请求到后端
+            .done(function(response) {
+              alert(response); // 显示注销成功提示
+              window.location.href = '/adminLogin';
+            })
+            .fail(function(error) {
+              alert("Failed to logout: " + error.responseText); // 显示注销失败提示
+            });
+  }
+
+  // 点击按钮时触发的函数，用于获取并显示商品状态信息
+  function fetchStock(goodsId) {
+    // 发送 AJAX 请求到后端获取商品状态信息
+    $.ajax({
+      url: '/goods/stock', // 后端处理请求的URL
+      type: 'GET', // 请求类型为GET
+      data: { goodsId: goodsId }, // 发送到服务器的数据
+      success: function(response) {
+        // 成功获取到商品状态信息后，在模态框中显示
+        $('#stock-info').html('<p>商品名：' + response.goodsName + '</p><p>库存：' + response.stock + '</p>');
+        showStockModal(); // 显示模态框
+      },
+      error: function(xhr, status, error) {
+        // 请求失败时的处理逻辑
+        alert('Failed to fetch status: ' + error);
+      }
+    });
+  }
+
+  // 点击按钮时触发的函数，用于获取并显示月销量柱状图
+  function fetchSales(goodsId) {
+    // 发送 AJAX 请求到后端获取月销量数据
+    $.ajax({
+      url: '/admin/goods/sales', // 后端处理请求的URL
+      type: 'GET', // 请求类型为GET
+      data: { goodsId: goodsId }, // 发送到服务器的数据
+      success: function(monthSalesList) {
+        // 成功获取到月销量数据后，使用 Chart.js 绘制柱状图
+        drawBarChart(monthSalesList);
+        showMonthlySalesModal(); // 显示模态框
+      },
+      error: function(xhr, status, error) {
+        // 请求失败时的处理逻辑
+        alert('Failed to fetch monthly sales: ' + error);
+      }
+    });
+  }
+
+  // 使用 Chart.js 绘制柱状图
+  function drawBarChart(monthSalesList) {
+    var months = [];
+    var sales = [];
+
+    // 遍历月销量数据列表，提取月份和销量数据
+    monthSalesList.forEach(function(monthSales) {
+      months.push(monthSales.month);
+      sales.push(monthSales.sale);
+    })
+
+    // 获取画布元素
+    var ctx = document.getElementById('barChart').getContext('2d');
+
+    // 如果之前已经存在图表实例，则销毁它
+    if (window.barChartInstance) {
+      window.barChartInstance.destroy();
+    }
+
+    // 创建新的图表实例
+    window.barChartInstance = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: months, // 使用提取的月份数据作为横坐标标签
+        datasets: [{
+          label: 'Monthly Sales',
+          data: sales, // 使用提取的销量数据作为纵坐标数据
+          backgroundColor: 'rgba(75, 192, 192, 0.2)',
+          borderColor: 'rgb(192,75,190)',
+          borderWidth: 1
+        }]
+      },
+      options: {
+        scales: {
+          y: {
+            ticks: {
+              beginAtZero: true
+            }
+          }
+        },
+        barThickness: 35 // 设置柱体的宽度为 30 像素
+      }
+    });
+  }
+
+
+
+
+
+
+
+
+</script>
+
+</body>
+</html>

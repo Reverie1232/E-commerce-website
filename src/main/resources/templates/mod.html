@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>China Map</title>
+    <!-- 导入ECharts库 -->
+
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
+    <script src="/static/js/china.js"></script>
+</head>
+<!-- 模态框 -->
+<div id="chinaMapModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <div id="chinaMap" style="width: 600px; height: 400px;"></div>
+    </div>
+</div>
+<body>
+<button onclick="openModal()">显示中国地图</button>
+
+</body>
+<script>
+    function drawChinaMap() {
+        // 发送 AJAX 请求获取数据
+        $.ajax({
+            url: '/admin/map', // 后端处理请求的URL
+            type: 'GET', // 请求类型为GET
+            success: function(data) {
+                // 使用ECharts绘制中国地图
+                var myChart = echarts.init(document.getElementById('chinaMap'));
+                // 地图数据
+                var mapData = [];
+
+                // 填充地图数据
+                data.forEach(function(item) {
+                    mapData.push({
+                        name: item.province,
+                        value: item.sales // 使用销售金额作为值
+                    });
+                });
+                // 配置地图参数
+                var option = {
+                    title: {
+                        text: '中国地图 - 销售金额占比',
+                        subtext: '示例数据'
+                    },
+                    tooltip: {
+                        trigger: 'item',
+                        formatter: '{b}<br/>{c}元'
+                    },
+                    visualMap: {
+                        min: 0,
+                        max: 100000,
+                        left: 'left',
+                        top: 'bottom',
+                        text: ['High', 'Low'],
+                        calculable: true
+                    },
+                    series: [
+                        {
+                            name: '销售金额',
+                            type: 'map',
+                            mapType: 'china',
+                            roam: false,
+                            label: {
+                                show: true,
+                                formatter: '{b}'
+                            },
+                            data: mapData
+                        }
+                    ]
+                };
+
+                // 使用配置项绘制地图
+                myChart.setOption(option);
+            },
+            error: function(xhr, status, error) {
+                // 请求失败时的处理逻辑
+                alert('Failed to fetch China map data: ' + error);
+            }
+        });
+
+    }
+
+    // 打开模态框
+    function openModal() {
+        document.getElementById('chinaMapModal').style.display = 'block';
+// 调用函数绘制中国地图
+        drawChinaMap();
+    }
+
+    // 关闭模态框
+    function closeModal() {
+        document.getElementById('chinaMapModal').style.display = 'none';
+    }
+
+</script>
+</html>
